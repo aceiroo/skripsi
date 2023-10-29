@@ -4,9 +4,8 @@ class Item {
   late int stock;
   late String description;
   late String image;
-  late String purchase_price;
-  late String selling_price;
+  late String price;
 
-  Item(this.id, this.name, this.stock, this.description, this.image,
-      this.purchase_price, this.selling_price);
+  Item(
+      this.id, this.name, this.stock, this.description, this.image, this.price);
 }

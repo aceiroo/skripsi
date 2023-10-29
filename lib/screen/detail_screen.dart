@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stock_app/model/Item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:stock_app/screen/edit_item_screen.dart';
 
 class DetailScreen extends StatefulWidget {
   DetailScreen({super.key, required this.item});
@@ -23,7 +24,6 @@ class _DetailScreenState extends State<DetailScreen> {
               onPressed: () {
                 deleteDialog(
                   context,
-                  context,
                   widget.item.name,
                   widget.item.id,
                   widget.item.image,
@@ -31,6 +31,17 @@ class _DetailScreenState extends State<DetailScreen> {
               },
               icon: Icon(Icons.delete),
             ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditItemScreen(item: widget.item),
+                  ),
+                );
+              },
+              icon: Icon(Icons.edit),
+            )
           ],
         ),
         body: SingleChildScrollView(
@@ -56,6 +67,14 @@ class _DetailScreenState extends State<DetailScreen> {
                         fontSize: 28.0,
                       ),
                       textAlign: TextAlign.left,
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Text(
+                      "Rp.${widget.item.price}",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 30.0),
                     ),
                     SizedBox(
                       height: 10.0,
@@ -90,49 +109,6 @@ class _DetailScreenState extends State<DetailScreen> {
                             )
                           ],
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ListTile(
-                                title: Text("Purchase Price"),
-                              ),
-                            ),
-                            Expanded(
-                              child: ListTile(
-                                title: Text("Rp.${widget.item.purchase_price}"),
-                              ),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ListTile(
-                                title: Text("Selling Price"),
-                              ),
-                            ),
-                            Expanded(
-                              child: ListTile(
-                                title: Text("Rp.${widget.item.selling_price}"),
-                              ),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ListTile(
-                                title: Text("Profit"),
-                              ),
-                            ),
-                            Expanded(
-                              child: ListTile(
-                                title: Text(
-                                    "Rp.${int.parse(widget.item.selling_price) - int.parse(widget.item.purchase_price)}"),
-                              ),
-                            )
-                          ],
-                        ),
                       ],
                     ),
                   ],
@@ -143,8 +119,8 @@ class _DetailScreenState extends State<DetailScreen> {
         ));
   }
 
-  Future<void> deleteDialog(BuildContext context, BuildContext detailContext,
-      String name, String id, String imgUrl) {
+  Future<void> deleteDialog(
+      BuildContext context, String name, String id, String imgUrl) {
     final _firestore = FirebaseFirestore.instance;
     final _storageRef = FirebaseStorage.instance.refFromURL(imgUrl);
 
@@ -153,8 +129,9 @@ class _DetailScreenState extends State<DetailScreen> {
         await _storageRef.delete();
         await _firestore.collection("items").doc(id).delete();
 
-        Navigator.of(context).pop();
-        Navigator.of(detailContext).pop();
+        Navigator.of(context)
+          ..pop()
+          ..pop();
       } catch (e) {
         print(e);
       }

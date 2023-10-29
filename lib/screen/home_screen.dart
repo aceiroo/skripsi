@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:stock_app/model/Item.dart';
 import 'package:stock_app/model/OrderItem.dart';
 import 'package:stock_app/screen/add_item_screen.dart';
+import 'package:stock_app/screen/detail_order_screen.dart';
 import 'package:stock_app/screen/detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stock_app/screen/login_screen.dart';
@@ -144,12 +145,13 @@ class OrderList extends StatelessWidget {
                 child: Image.network(orderList[index].item_image),
               ),
               onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => DetailScreen(item: itemList[index]),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        DetailOrderScreen(order: orderList[index]),
+                  ),
+                );
               },
             );
           },

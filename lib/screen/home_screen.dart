@@ -138,6 +138,10 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: logout,
               icon: Icon(Icons.logout),
             ),
+            IconButton(
+              onPressed: getData,
+              icon: Icon(Icons.refresh),
+            ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(

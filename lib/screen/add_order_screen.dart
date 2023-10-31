@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:stock_app/model/Item.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -23,6 +24,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
   String? item_id;
   String? item_name;
   String? item_image;
+  int stock = 0;
   int quantity = 0;
 
   bool isLoading = false;
@@ -33,6 +35,10 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
   }
 
   void addOrder() async {
+    setState(() {
+      isLoading = true;
+    });
+
     Map<String, dynamic> orderData = {
       "created_at": DateTime.now(),
       "invoice_number": "INV${Random().nextInt(99999999)}",
@@ -43,11 +49,12 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
       "quantity": quantity,
     };
 
-    setState(() {
-      isLoading = true;
-    });
-
     await _firestore.collection("orders").add(orderData);
+
+    await _firestore
+        .collection("items")
+        .doc(item_id)
+        .update({"stock": stock - quantity});
 
     setState(() {
       isLoading = false;
@@ -101,6 +108,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                       item_id = itemList[selectedValue].id;
                       item_name = itemList[selectedValue].name;
                       item_image = itemList[selectedValue].image;
+                      stock = itemList[selectedValue].stock;
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,6 +129,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                                   item_id = itemList[value].id;
                                   item_name = itemList[value].name;
                                   item_image = itemList[value].image;
+                                  stock = itemList[value].stock;
                                 });
                               }),
                           ExpansionTile(
@@ -175,11 +184,17 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                   height: 15.0,
                 ),
                 TextField(
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   decoration: InputDecoration(
                     label: Text("Quantity"),
                   ),
                   onChanged: (value) {
-                    quantity = int.parse(value);
+                    setState(() {
+                      quantity = int.parse(value);
+                    });
                   },
                 ),
                 SizedBox(
@@ -189,7 +204,10 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: addOrder,
+                        onPressed:
+                            (quantity > stock || quantity == 0 || stock == 0)
+                                ? null
+                                : addOrder,
                         icon: Icon(Icons.add),
                         label: Text("Add Order"),
                       ),

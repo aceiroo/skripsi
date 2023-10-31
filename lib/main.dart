@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:stock_app/screen/add_item_screen.dart';
+import 'package:stock_app/screen/add_order_screen.dart';
 import 'package:stock_app/screen/edit_item_screen.dart';
 import 'package:stock_app/screen/home_screen.dart';
 import 'package:stock_app/screen/login_screen.dart';
@@ -57,6 +58,7 @@ class _MyAppState extends State<MyApp> {
         LoginScreen.id: (context) => LoginScreen(),
         RegisterScreen.id: (context) => RegisterScreen(),
         AddItemScreen.id: (context) => AddItemScreen(),
+        AddOrderScreen.id: (context) => AddOrderScreen(),
       },
     );
   }

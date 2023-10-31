@@ -6,6 +6,7 @@ class OrderItem {
   late String item_image;
   late int quantity;
   late String price_per_unit;
+  late DateTime created_at;
 
   OrderItem(
     this.id,
@@ -15,5 +16,6 @@ class OrderItem {
     this.item_image,
     this.quantity,
     this.price_per_unit,
+    this.created_at,
   );
 }

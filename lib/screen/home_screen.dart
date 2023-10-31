@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:stock_app/model/Item.dart';
 import 'package:stock_app/model/OrderItem.dart';
 import 'package:stock_app/screen/add_item_screen.dart';
+import 'package:stock_app/screen/add_order_screen.dart';
 import 'package:stock_app/screen/detail_order_screen.dart';
 import 'package:stock_app/screen/detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -157,14 +158,18 @@ class _HomeScreenState extends State<HomeScreen> {
           currentIndex: selectedIndex,
           onTap: onItemTapped,
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            if (selectedIndex == 0) {
-              Navigator.pushNamed(context, AddItemScreen.id);
-            }
-          },
-          child: Icon(Icons.add),
-        ),
+        floatingActionButton: selectedIndex == 2
+            ? null
+            : FloatingActionButton(
+                onPressed: () {
+                  if (selectedIndex == 0) {
+                    Navigator.pushNamed(context, AddItemScreen.id);
+                  } else if (selectedIndex == 1) {
+                    Navigator.pushNamed(context, AddOrderScreen.id);
+                  }
+                },
+                child: Icon(Icons.add),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         body: widgetOptions.elementAt(selectedIndex));
   }
@@ -201,6 +206,7 @@ class OrderList extends StatelessWidget {
               order.get("item_image"),
               order.get("quantity"),
               order.get("price_per_unit"),
+              order.get("created_at").toDate(),
             ),
           );
         }
@@ -306,7 +312,7 @@ class Dashboard extends StatelessWidget {
             ),
             SfCartesianChart(
               isTransposed: true,
-              title: ChartTitle(text: "Yearly Sales Analysis"),
+              title: ChartTitle(text: "Monthly Sales"),
               primaryXAxis: CategoryAxis(),
               series: [
                 BarSeries(
@@ -317,9 +323,30 @@ class Dashboard extends StatelessWidget {
                   dataLabelSettings: DataLabelSettings(
                     isVisible: true,
                   ),
+                  color: Colors.blue,
                 )
               ],
-            )
+            ),
+            SizedBox(
+              height: 15.0,
+            ),
+            // SfCartesianChart(
+            //   isTransposed: true,
+            //   title: ChartTitle(text: "Monthly Revenue"),
+            //   primaryXAxis: CategoryAxis(),
+            //   series: [
+            //     BarSeries(
+            //       dataSource: salesData,
+            //       xValueMapper: (ChartData data, _) => data.x,
+            //       yValueMapper: (ChartData data, _) => data.y,
+            //       borderRadius: BorderRadius.circular(15.0),
+            //       dataLabelSettings: DataLabelSettings(
+            //         isVisible: true,
+            //       ),
+            //       color: Colors.blue,
+            //     )
+            //   ],
+            // ),
           ],
         ),
       ),

@@ -205,9 +205,7 @@ class OrderList extends StatelessWidget {
             OrderItem(
               order.id,
               order.get("invoice_number"),
-              order.get("item_id"),
-              order.get("item_name"),
-              order.get("item_image"),
+              order.get("item"),
               order.get("quantity"),
               order.get("price_per_unit"),
               order.get("created_at").toDate(),
@@ -220,9 +218,9 @@ class OrderList extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               title: Text(
-                  "${orderList[index].invoice_number} | ${orderList[index].item_name} | ${orderList[index].quantity} x  Rp.${orderList[index].price_per_unit}"),
+                  "${orderList[index].invoice_number} | ${orderList[index].item["name"]} | ${orderList[index].quantity} x  Rp.${orderList[index].price_per_unit}"),
               leading: CircleAvatar(
-                child: Image.network(orderList[index].item_image),
+                child: Image.network(orderList[index].item["image"].toString()),
               ),
               onTap: () {
                 Navigator.push(

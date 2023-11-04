@@ -22,7 +22,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.network(widget.order.item_image),
+            Image.network(widget.order.item["image"].toString()),
             SizedBox(
               height: 15.0,
             ),
@@ -32,7 +32,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${widget.order.invoice_number} - ${widget.order.item_name}",
+                    "${widget.order.invoice_number} - ${widget.order.item["name"]}",
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,

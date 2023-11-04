@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -39,12 +40,14 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
       isLoading = true;
     });
 
+    final itemRef =
+    await _firestore.collection("items").doc(item_id.toString()).get();
+
+
     Map<String, dynamic> orderData = {
       "created_at": DateTime.now(),
       "invoice_number": "INV${Random().nextInt(99999999)}",
-      "item_id": item_id.toString(),
-      "item_name": item_name.toString(),
-      "item_image": item_image.toString(),
+      "item": itemRef.data(),
       "price_per_unit": price_per_unit.toString(),
       "quantity": quantity,
     };
@@ -106,8 +109,6 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
 
                       price_per_unit = itemList[selectedValue].price;
                       item_id = itemList[selectedValue].id;
-                      item_name = itemList[selectedValue].name;
-                      item_image = itemList[selectedValue].image;
                       stock = itemList[selectedValue].stock;
 
                       return Column(
@@ -127,8 +128,6 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                                   selectedValue = value!;
                                   price_per_unit = itemList[value].price;
                                   item_id = itemList[value].id;
-                                  item_name = itemList[value].name;
-                                  item_image = itemList[value].image;
                                   stock = itemList[value].stock;
                                 });
                               }),
@@ -149,7 +148,8 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                                   Expanded(
                                     child: ListTile(
                                       title: Text(
-                                          "Rp.${itemList[selectedValue].price}"),
+                                          "Rp.${itemList[selectedValue]
+                                              .price}"),
                                     ),
                                   )
                                 ],
@@ -205,9 +205,9 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed:
-                            (quantity > stock || quantity == 0 || stock == 0)
-                                ? null
-                                : addOrder,
+                        (quantity > stock || quantity == 0 || stock == 0)
+                            ? null
+                            : addOrder,
                         icon: Icon(Icons.add),
                         label: Text("Add Order"),
                       ),
